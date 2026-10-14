@@ -1,0 +1,17 @@
+[Unit]
+Description=OpenCode Telegram bot
+After=opencode-serve.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Blocks until api.telegram.org answers, so a network outage does not
+# turn into a crash-restart loop.
+ExecStartPre=@BIN_DIR@/wait-net-tg.sh
+ExecStart=@OPENCODE_TELEGRAM_BIN@ start
+
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

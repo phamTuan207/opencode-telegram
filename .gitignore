@@ -1,0 +1,10 @@
+# Never commit real secrets.
+.env
+*.env
+!*.env.example
+
+# Generated at install time by setup.sh
+templates/*.service.rendered
+
+node_modules/
+.DS_Store

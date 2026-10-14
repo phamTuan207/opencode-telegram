@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenCode server (backend for the Telegram bot and the Live TUI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Substitute the absolute path of your opencode binary. Use the v2 binary:
+# a v1 build has no --server flag and fails silently.
+ExecStart=@OPENCODE_BIN@ serve --port @PORT@
+WorkingDirectory=@PROJECT_DIR@
+
+# Must be identical to OPENCODE_SERVER_PASSWORD in the bot's .env.
+# The server always requires auth; without this variable opencode invents a
+# random password and prints it, which no client can discover.
+Environment=OPENCODE_SERVER_PASSWORD=@SERVER_PASSWORD@
+Environment=OPENCODE_DISABLE_AUTOUPDATE=1
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Watchdog for opencode-telegram
+# Runs periodically to restart a frozen bot.
+[Service]
+Type=oneshot
+ExecStart=@BIN_DIR@/opencode-telegram-watchdog.sh

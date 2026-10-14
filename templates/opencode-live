@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Launch the OpenCode TUI against the shared server, so the desktop window and
+# the Telegram bot are the same conversation.
+#
+# WHY A WRAPPER EXISTS
+# The server sets OPENCODE_SERVER_PASSWORD. The client wants that same secret
+# under a different name: OPENCODE_PASSWORD. Without it the client exits 1
+# before drawing the TUI, so the terminal window opens and vanishes:
+#
+#   Error: Server at http://127.0.0.1:4096 requires a password; set OPENCODE_PASSWORD
+#
+# Keeping the secret in one script means every launch site — keybind, menu
+# entry, manual shell — stays in sync. Patching only the keybind leaves the
+# menu entry broken.
+set -eu
+
+PORT="${OPENCODE_PORT:-@PORT@}"
+
+# Read the same secret the server uses, instead of duplicating it here.
+ENV_FILE="${OPENCODE_TG_ENV:-$HOME/.config/opencode-telegram-bot/.env}"
+if [ ! -f "$ENV_FILE" ]; then
+  echo "opencode-live: cannot read $ENV_FILE" >&2
+  exit 1
+fi
+OPENCODE_PASSWORD="$(grep -oP '^OPENCODE_SERVER_PASSWORD=\K.*' "$ENV_FILE")"
+export OPENCODE_PASSWORD
+
+exec @OPENCODE_BIN@ --server "http://127.0.0.1:${PORT}" "$@"

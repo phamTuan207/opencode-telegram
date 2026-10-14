@@ -1,0 +1,10 @@
+[Unit]
+Description=Run opencode-telegram watchdog
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=4min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target
